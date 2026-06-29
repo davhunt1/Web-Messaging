@@ -1,0 +1,178 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Messaging Testing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header, footer {
+            background-color: #333;
+            color: white;
+            padding: 1em;
+            text-align: center;
+        }
+        nav {
+            background-color: #f4f4f4;
+            padding: 0.5em;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 10px;
+            color: #333;
+            text-decoration: none;
+        }
+        main {
+            padding: 2em;
+        }
+    </style>
+<script type="text/javascript" charset="utf-8">
+  let deployid = localStorage.getItem("selectedDeploymentID") || "daafc71c-9565-49bf-9902-ff89f4849e29"; // Default to GSD Systems UM DEV
+  // Define the Genesys script
+  (function (g, e, n, es, ys) {
+    g['_genesysJs'] = e;
+    g[e] = g[e] || function () {
+      (g[e].q = g[e].q || []).push(arguments)
+    };
+    g[e].t = 1 * new Date();
+    g[e].c = es;
+    ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8'; 
+    document.head.appendChild(ys);
+  })(window, 'Genesys', 'https://apps.mypurecloud.de/genesys-bootstrap/genesys.min.js', {
+    environment: 'prod-euc1',
+    deploymentId: deployid
+  });
+  
+  function toggleMessenger() {
+    Genesys("command", "Messenger.open", {},
+      function(o) { /* fulfilled callback */ },
+      function(o) { // if rejected
+        Genesys("command", "Messenger.close");
+      }
+    );
+  }
+
+ // Function to handle language change and email
+        function changeLanguage(selectElement) {
+            const selectedLocale = selectElement.value;
+            localStorage.setItem("selectedLocale", selectedLocale);
+            location.reload(); // Refresh the page
+        }
+            function changeMedia(selectElement) {
+            const selectedMedia = selectElement.value;
+            localStorage.setItem("selectedMedia", selectedMedia);
+            location.reload(); // Refresh the page
+        }
+            function changeName(selectElement) {
+            const selectedName = nameSelect.value;
+            localStorage.setItem("selectedName", selectedName);
+            location.reload(); // Refresh the page
+        }
+            function changeEmail(selectElement) {
+            const selectedEmail = emailSelect.value;
+            localStorage.setItem("selectedEmail", selectedEmail);
+            location.reload(); // Refresh the page
+        }
+            function changeCustomer(selectElement) {
+            const selectedCustomer = customerSelect.value;
+            localStorage.setItem("selectedCustomer", selectedCustomer);
+            location.reload(); // Refresh the page
+        }
+            function changeDeploymentID(selectElement) {
+            const selectedDeploymentID = deploymentidSelect.value;
+            localStorage.setItem("selectedDeploymentID", selectedDeploymentID);
+            location.reload(); // Refresh the page
+        }
+
+        // Function to initialize Genesys with stored values
+        function initializeGenesys() {
+            const locale = localStorage.getItem("selectedLocale") || "en-GB"; // Default to en-GB
+            const username = localStorage.getItem("selectedName") || "GSD Systems"; // Default to GSD Systems
+            const email = localStorage.getItem("selectedEmail") || "GSDSystems@computacenter.com"; // Default to GSD Systems
+            const customer = localStorage.getItem("selectedCustomer") || "DEMO"; // Default to Demo
+            const clientMedia = localStorage.getItem("selectedMedia") || "WEB"; // Default to Web Messenger
+            //const deployid = localStorage.getItem("selectedDeploymentID") || "daafc71c-9565-49bf-9902-ff89f4849e29"; // Default to GSD Systems UM DEV
+            Genesys("command", "Database.set", {
+                messaging: {
+                    customAttributes: {
+                        name: username,
+                        locale: locale,
+                        language: locale,
+                        webUserEmail: email,
+                        teamsUserEmail: email,
+                        userEmail: email,
+                        userId: email,
+                        custName: customer,
+                        media: clientMedia,
+                        teamsUserName: username,
+                        webUserName: username
+                      }
+                }
+            });
+
+            // Set dropdown to stored value
+            document.getElementById("languageSelect").value = locale;
+            document.getElementById("nameSelect").value = username;
+            document.getElementById("emailSelect").value = email;
+            document.getElementById("customerSelect").value = customer;
+            document.getElementById("mediaSelect").value = clientMedia;
+            document.getElementById("deploymentidSelect").value = deployid;
+        }
+
+        window.onload = initializeGenesys;
+
+  
+</script>
+</head>
+<body>
+    <header>
+        <h1>Web Messaging Testing</h1><h2>Generic template</h2><p></p>
+    </header>
+    <br></br>
+    <label for="languageSelect">Choose Language:</label>
+    <select id="languageSelect" onchange="changeLanguage(this)">
+        <option value="en-GB">English (UK)</option>
+        <option value="fr-FR">Français (FR)</option>
+        <option value="de-DE">Deutsch (DE)</option>
+        <option value="es-ES">Espanol (ES)</option>
+        <option value="nl-NL">Dutch (NL)</option>
+        <option value="pl-PL">Polish (PL)</option>
+        <option value="pt-PT">Portuguese (PT)</option>
+        <option value="pt-BR">Brazilian (BR)</option>
+        <option value="es-MX">LATAM (MX)</option>
+        <option value="zh-CN">Chinese (CN)</option>
+        <option value="ko-KR">Korean (KR)</option>
+        <option value="bg-BG">Bulgarian (BG)</option>
+        <option value="tr-TR">Turkish (TR)</option>
+        <option value="it-IT">Italian (IT)</option>
+        <option value="ro-RO">Romanian (RO)</option>
+        <option value="ja-JP">Japanese (JP)</option>
+        <option value="fi-FI">Finnish (FI)</option>
+        <option value="nb-NO">Norwegian (NO)</option>
+        <option value="sv-SE">Svenska (SE)</option>
+        <option value="da-DK">Danish (DK)</option>
+        <option value="id-ID">Indonesia (ID)</option>
+        <option value="th-TH">Thai (TH)</option>
+        <option value="da-DK">Vietnamese (VN)</option>
+    </select>
+    <br></br>
+    <label for="mediaSelect">Choose client type:</label>
+        <select id="mediaSelect" onchange="changeMedia(this)">
+        <option value="Teams">MS Teams</option>
+        <option value="LACI">LACI</option>
+        <option value="Google Chat">Google Chat</option>
+        <option value="WEB">Web Messenger</option>
+    </select>
+    <br></br>
+    <p>Enter name : </p><input type="text" style="width:300px" id="nameSelect" onchange="changeName(this)"/>
+    <p>Enter email address : </p><input type="text" style="width:300px" id="emailSelect" onchange="changeEmail(this)"/>
+    <p>Enter Customer division : </p><input type="text" style="width:300px" id="customerSelect" onchange="changeCustomer(this)"/>
+    <p>Enter deploymentID (and then press TAB) : </p><input type="text" style="width:300px" id="deploymentidSelect" onchange="changeDeploymentID(this)"/></p>
+    <p><br>For reference:
+    <br>GSD UM DEV  deployment ID = daafc71c-9565-49bf-9902-ff89f4849e29
+    <br>GSD UM PREP deployment ID = e8cb33fa-c91c-435a-87a5-d6bd43452b9b</p>
+</body>
+</html>
